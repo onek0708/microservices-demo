@@ -1,4 +1,4 @@
-#!/bin/sh -eu
+#!/bin/bash -eu
 #
 # Copyright 2018 Google LLC
 #
@@ -14,14 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/bash
+# Generate the C# code for .proto files
 set -e
-trap "exit" TERM
 
-if [[ -z "${FRONTEND_ADDR}" ]]; then
-    echo >&2 "FRONTEND_ADDR not specified"
-    exit 1
-fi
+PROTODIR=../../pb
 
-set -x
-locust --host="http://${FRONTEND_ADDR}" --no-web -c "${USERS:-10}" 2>&1
+# enter this directory
+CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+protoc --csharp_out=$CWD/grpc_generated -I $PROTODIR $PROTODIR/demo.proto
+

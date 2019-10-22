@@ -12,11 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: recommendationservice
 spec:
+  selector:
+    matchLabels:
+      app: recommendationservice
   template:
     metadata:
       labels:
@@ -37,8 +40,12 @@ spec:
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:8080"]
         env:
+        - name: PORT
+          value: "8080"
         - name: PRODUCT_CATALOG_SERVICE_ADDR
           value: "productcatalogservice:3550"
+        - name: ENABLE_PROFILER
+          value: "0"
         resources:
           requests:
             cpu: 100m

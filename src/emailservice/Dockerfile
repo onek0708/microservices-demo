@@ -1,13 +1,17 @@
-FROM python:3-slim as base
+FROM python:3.7-slim as base
 
 FROM base as builder
+
+RUN apt-get -qq update \
+    && apt-get install -y --no-install-recommends \
+        g++ \
+    && rm -rf /var/lib/apt/lists/*
 
 # get packages
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 FROM base as final
-
 # Enable unbuffered logging
 ENV PYTHONUNBUFFERED=1
 
